@@ -1,20 +1,38 @@
 from flask import render_template, session, request, redirect, url_for, flash
 from shop import app, db, bcrypt
+from shop.products.models import Addskin, Brand, Category
 from .forms import RegistrationForm, LoginForm
 from .models import User
 
 
+@app.route("/collections")
+def colleccion():
+    if 'email' not in session:
+        print("esta el email")
+        flash(f'Iniciar Sesion antes', 'danger')
+        return redirect(url_for('login'))
+    collections = Brand.query.order_by(Brand.id.desc()).all()
+    return render_template('admin/collections.html', collections=collections, title="Colecciones de armas")
+
+
+@app.route("/categories")
+def categories():
+    if 'email' not in session:
+        print("esta el email")
+        flash(f'Iniciar Sesion antes', 'danger')
+        return redirect(url_for('login'))
+    categories = Category.query.order_by(Category.id.desc()).all()
+    return render_template('admin/collections.html', categories=categories, title="Categorias de armas")
+
 @app.route("/admin")
 def admin():
+    print(session['email'])
     if 'email' not in session:
-        flash(f'Iniciar Sesion antes')
+        print("esta el email")
+        flash(f'Iniciar Sesion antes', 'danger')
         return redirect(url_for('login'))
-    return render_template('admin/index.html', title='Admin Page')
-
-
-@app.route("/")
-def home():
-    return render_template('admin/index.html', title='Home Page')
+    skins = Addskin.query.all()
+    return render_template('admin/index.html', title='Admin Page', skins=skins)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -44,4 +62,16 @@ def login():
             return redirect(request.args.get('next') or url_for('admin'))
         else:
             flash('Password incorrecta', 'danger')
+    return render_template('admin/login.html', form=form, title='Iniciar Sesion')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    print("hola")
+    form = LoginForm(request.form)
+    if session['email']:
+        session.clear()
+        redirect(url_for('login'))
+    else:
+        redirect(url_for('login'))
     return render_template('admin/login.html', form=form, title='Iniciar Sesion')
