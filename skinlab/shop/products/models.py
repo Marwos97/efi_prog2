@@ -8,6 +8,7 @@ class Addskin(db.Model):
     price = db.Column(db.Numeric(), nullable=False)
     float = db.Column(db.Numeric(), nullable=False)
     stock = db.Column(db.Integer(), default=1)
+    
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'),
         nullable=False)
     brand = db.relationship('Brand',

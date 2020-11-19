@@ -53,8 +53,8 @@
                 <td>{{skin.brand.name}}</td>
                 <td>{{skin.category.name}}</td>
                 <td><img src="{{url_for('static', filename='images/' + skin.image)}}" alt="" width="50px" height="50px"></td>
-                <td>Editar</td>
-                <td>Borrar</td>
+                <td><a href="{{url_for('updateskin',id=skin.id)}}"class="btn btn-info btn-sm">Edit</a></td>
+                <td><a href="{{url_for('updateskin',id=skin.id)}}"class="btn btn-danger btn-sm">Delete</a></td>
             </tr>
             {% endfor %}
         </tbody>

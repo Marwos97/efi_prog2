@@ -63,3 +63,12 @@ def addskin():
         db.session.commit()
         return redirect(url_for('admin'))
     return render_template('products/addskin.html', title='Agregar Skin a la venta', form=form, brands=brands, categories=categories)
+
+
+@app.route('/updateskin/<int:id>', methods=["GET","POST"])
+def updateskin(id):
+    brands = Brand.query.all()
+    categories = Category.query.all()
+    skin = Addskin.query.get_or_404(id)
+    form = Addskin(request.form)
+    return render_template('products/updateskin.html', form=form,brands=brands, categories=categories, skin=skin )
