@@ -6,7 +6,7 @@ from .models import User
 
 
 @app.route("/collections")
-def colleccion():
+def collections():
     if 'email' not in session:
         print("esta el email")
         flash(f'Iniciar Sesion antes', 'danger')
