@@ -27,7 +27,7 @@
                 <option value="{{category.id}}">{{category.name}}</option>
                 {% endfor %}
             </select>
-            {{ render_field(form.image, class="form-control" )}}
+            {{ render_field(form.image, class="form-control", required )}}
             <p><input type="submit" value="Agregar Skin" class="btn btn-info btn-large"></p>
         </form>
     </div>

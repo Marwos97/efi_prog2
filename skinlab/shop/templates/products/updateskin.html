@@ -27,13 +27,7 @@
                 <option value="{{category.id}}">{{category.name}}</option>
                 {% endfor %}
             </select>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4"><input type="file" class="form-control" name="image"></div>
-                </div>
-
-            </div>
-
+            {{ render_field(form.image, class="form-control")}}
             <p><input type="submit" value="Actualizar Skin" class="btn btn-info btn-large"></p>
         </form>
     </div>

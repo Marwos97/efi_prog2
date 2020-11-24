@@ -1,8 +1,8 @@
-from flask import redirect, render_template, url_for, flash, request, session
+from flask import redirect, render_template, url_for, flash, request, session, current_app
 from shop import db, app, photos
 from .models import Brand, Category, Addskin
 from .forms import AddSkin
-import secrets
+import secrets, os
 
 
 @app.route('/addcollection', methods=['GET','POST'])
@@ -35,6 +35,18 @@ def updatecollection(id):
         return redirect(url_for('collections'))
     return render_template('products/updatecollection.html', title='Update collection', updatecollection=updatecollection)
 
+@app.route('/deletecollection/<int:id>', methods = ['POST'])
+def deletecollection(id):
+    print("hola")
+    brand = Brand.query.get_or_404(id)
+    if request.method == 'POST':
+        print("hola1")
+        db.session.delete(brand)
+        db.session.commit()
+        flash(f'La coleción {brand.name} se elimino de la base de datos','success')
+        return redirect(url_for('admin'))
+    flash(f'La coleción {brand.name} no se elimino de la base de datos','warning')
+    return redirect(url_for('admin'))
 
 @app.route('/updatecategory/<int:id>', methods=['GET','POST'])
 def updatecategory(id):
@@ -109,6 +121,12 @@ def updateskin(id):
         skin.price = form.price.data
         skin.float = form.float.data
         skin.stock = form.stock.data
+        if request.files.get('image'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/images/" + skin.image))
+                skin.image =photos.save(request.files.get('image'), name=secrets.token_hex(10) + ".")
+            except:
+                skin.image =photos.save(request.files.get('image'), name=secrets.token_hex(10) + ".")
         db.session.commit()
         flash(f'Skin actualizada')
         return redirect(url_for('admin'))

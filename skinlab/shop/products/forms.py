@@ -6,4 +6,4 @@ class AddSkin(Form):
     price = DecimalField('Precio', [validators.DataRequired()])
     float = DecimalField('Desgaste', [validators.DataRequired()])
     stock = IntegerField('Stock', [validators.DataRequired()])
-    image = FileField('Imagen skin', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'gif', 'jpeg'])])
+    image = FileField('Imagen skin', validators=[FileAllowed(['jpg', 'png', 'gif', 'jpeg'])])

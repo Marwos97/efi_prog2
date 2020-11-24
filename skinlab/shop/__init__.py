@@ -8,7 +8,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:40575526@localhost/skinlab'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:39404817JOE@localhost/skinlab'
 app.config['SECRET_KEY'] = "asdasdasdagwerwfvcbdsf"
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 photos = UploadSet('photos', IMAGES)
