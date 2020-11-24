@@ -24,6 +24,10 @@ class Addskin(db.Model):
     def __repr__(self):
         return '<Post %r>' % self.title
 
+    @staticmethod
+    def get_by_collection(category_id):
+        return Addskin.query.filter_by(category_id=category_id).first()
+
 
 class Brand(db.Model):
 

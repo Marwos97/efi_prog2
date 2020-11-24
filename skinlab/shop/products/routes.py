@@ -4,6 +4,24 @@ from .models import Brand, Category, Addskin
 from .forms import AddSkin
 import secrets, os
 
+@app.route('/')
+def home():
+    skins = Addskin.query.filter(Addskin.stock > 0)
+    barnds = Brand.query.join(Addskin, (Brand.id == Addskin.brand_id)).all()
+    categories = Category.query.join(Addskin, (Category.id == Addskin.category_id)).all()
+    return render_template('products/index.html', skins = skins, collections=barnds, categories=categories)
+
+@app.route('/collection/<int:id>')
+def get_collection(id):
+    brand = Addskin.query.filter_by(brand_id=id)
+    barnds = Brand.query.join(Addskin, (Brand.id == Addskin.brand_id)).all()
+    return render_template('products/index.html', brands = brand, collections=barnds)
+
+@app.route('/category/<int:id>')
+def get_category(id):
+    category = Addskin.query.filter_by(category_id=id)
+    categories = Category.query.join(Addskin, (Category.id == Addskin.category_id)).all()
+    return render_template('products/index.html', category = category, categories = categories)
 
 @app.route('/addcollection', methods=['GET','POST'])
 def addcollection():
@@ -77,9 +95,18 @@ def addcat():
         flash(f'The category {getcat} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcat'))
+    return render_template('products/addcollection.html')
 
-
-    return render_template('products/addbrand.html')
+@app.route('/deletecat/<int:id>', methods = ['POST'])
+def deletecat(id):
+    category = Category.query.get_or_404(id)
+    if request.method == 'POST':
+        db.session.delete(category)
+        db.session.commit()
+        flash(f'La categoria {category.name} se elimino de la base de datos','success')
+        return redirect(url_for('admin'))
+    flash(f'La categoria {category.name} no se elimino de la base de datos','warning')
+    return redirect(url_for('admin'))
 
 
 @app.route('/addskin', methods=['POST', 'GET'])
@@ -106,11 +133,9 @@ def addskin():
         return redirect(url_for('admin'))
     return render_template('products/addskin.html', title='Agregar Skin a la venta', form=form, brands=brands, categories=categories)
 
-
 @app.route('/updateskin/<int:id>', methods=["GET","POST"])
 def updateskin(id):
-
-    collection = Brand.query.all()
+    collec = Brand.query.all()
     categories = Category.query.all()
     skin = Addskin.query.get_or_404(id)
     collection = request.form.get('collection')
@@ -121,6 +146,7 @@ def updateskin(id):
         skin.price = form.price.data
         skin.float = form.float.data
         skin.stock = form.stock.data
+        
         if request.files.get('image'):
             try:
                 os.unlink(os.path.join(current_app.root_path, "static/images/" + skin.image))
@@ -136,4 +162,19 @@ def updateskin(id):
     form.float.data = skin.float
     form.stock.data = skin.stock
 
-    return render_template('products/updateskin.html', form=form, collection=collection, categories=categories, skin=skin)
+    return render_template('products/updateskin.html', form=form, collections=collec, categories=categories, skin=skin)
+
+@app.route('/deleteskin/<int:id>', methods = ['POST'])
+def deleteskin(id):
+    skin = Addskin.query.get_or_404(id)
+    if request.method == 'POST':
+        try:
+            os.unlink(os.path.join(current_app.root_path, "static/images/" + skin.image))
+        except Exception as e:
+            print(e)
+        db.session.delete(skin)
+        db.session.commit()
+        flash(f'La skin {skin.name} se elimino de la base de datos','success')
+        return redirect(url_for('admin'))
+    flash(f'La skin {skin.name} no se elimino de la base de datos','warning')
+    return redirect(url_for('admin'))

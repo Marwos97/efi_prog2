@@ -15,9 +15,9 @@
             {{ render_field(form.stock, class="form-control", placeholder='Agregar stock skin' )}}
             <label for="brand"> Agregar a coleccion </label>
             <select name="brand" id="brand" class="form-control" required>
-                <option value="{{skin.brand_id}}">{{skin.brand.name}}</option>
-                {% for brand in brands %}
-                <option value="{{brand.id}}">{{brand.name}}</option>
+                <option value="{{skin.brand_id}}"> {{skin.brand.name}}</option>
+                {% for collec in collections %}
+                <option value="{{collec.id}}">{{collec.name}}</option>
                 {% endfor %}
             </select>
             <label for="category"> Agregar a category</label>
